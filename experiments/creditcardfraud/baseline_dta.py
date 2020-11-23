@@ -13,7 +13,10 @@ min_class = [1]  # Labels of the minority classes
 maj_class = [0]  # Labels of the majority classes
 X_train, y_train, X_test, y_test = load_creditcard(normalization=True, fp_train="./data/credit0.csv", fp_test="./data/credit1.csv")
 metrics = [Precision(name="precision"), Recall(name="recall")]
-thresholds = np.arange(0, 1, 0.01)
+
+# Thresholds < 0.5 will result in higher recall than baseline
+# Thresholds > 0.5 will result in higher precision than baseline
+thresholds = np.arange(0.0, 1, 0.01)
 
 fp_baseline = "./results/creditcardfraud/baseline.csv"
 fp_dta = "./results/creditcardfraud/dta.csv"
@@ -42,18 +45,20 @@ for _ in tqdm(range(10)):
     model.fit(X_train, y_train, epochs=30, batch_size=2048, validation_data=(X_val, y_val), verbose=0)
 
     # Predictions of model for `X_test`
-    y_pred = model(X_test).numpy()
-    baseline_stats = classification_metrics(y_test, np.around(y_pred).astype(int))
+    y_pred_val = model(X_val).numpy()
+    y_pred_test = model(X_test).numpy()
+    baseline_stats = classification_metrics(y_test, np.around(y_pred_test).astype(int))
 
     # Write current baseline run to `fp_baseline`
     with open(fp_baseline, 'a', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writerow(baseline_stats)
 
-    # F1 of every threshold
-    f1scores = [classification_metrics(y_test, (y_pred >= th).astype(int)).get("F1") for th in thresholds]
-    # Select threshold with highest F1
-    dta_stats = classification_metrics(y_test, (y_pred >= thresholds[np.argmax(f1scores)]).astype(int))
+    # Validation F1 of every threshold
+    f1scores = [classification_metrics(y_val, (y_pred_val >= th).astype(int)).get("F1") for th in thresholds]
+
+    # Select threshold with highest validation F1
+    dta_stats = classification_metrics(y_test, (y_pred_test >= thresholds[np.argmax(f1scores)]).astype(int))
 
     # Write current DTA run to `fp_dta`
     with open(fp_dta, 'a', newline='') as f:
