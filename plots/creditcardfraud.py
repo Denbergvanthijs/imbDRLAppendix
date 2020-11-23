@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+from matplotlib.lines import Line2D
 
 sns.set(context="paper")
 sns.set_palette("colorblind")
@@ -21,7 +22,8 @@ sns.barplot(x="Methode", y="Recall", data=df_all, ax=ax3)
 
 fig.suptitle("F1-score, Precision en Recall voor het DQN-algoritme, de baseline\n"
              "en de DTA-methode op de creditcard-fraude dataset.")
-plt.setp((ax1, ax2, ax3), ylim=(0.0, 1))
+plt.setp((ax1, ax2, ax3), ylim=(0.5, 1))
 plt.setp((ax1, ax2, ax3), xlabel="")
 plt.savefig("./plots/creditcardfraud.png", dpi=300)
+plt.legend(handles=[Line2D([], [], color="black", label="95% confidence interval")])
 plt.show()
