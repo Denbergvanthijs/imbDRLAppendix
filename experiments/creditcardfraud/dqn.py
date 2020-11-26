@@ -1,27 +1,25 @@
 import csv
 
 from imbDRL.data import get_train_test_val, load_creditcard
-from imbDRL.environments import ClassifyEnv
 from imbDRL.examples.ddqn.example_classes import TrainCustomDDQN
 from imbDRL.metrics import classification_metrics, network_predictions
-from tf_agents.environments.tf_py_environment import TFPyEnvironment
 from tqdm import tqdm
 
-episodes = 2_500  # Total number of episodes
+episodes = 25_000  # Total number of episodes
 warmup_episodes = 170_000  # Amount of warmup steps to collect data with random policy
 memory_length = warmup_episodes  # Max length of the Replay Memory
 batch_size = 2048
 collect_steps_per_episode = 0
 
 target_model_update = episodes // 30  # Period to overwrite the target Q-network with the default Q-network
-target_update_tau = 0.9  # Soften the target model update
+target_update_tau = 1  # Soften the target model update
 
 conv_layers = None  # Convolutional layers
 dense_layers = (256, 256, )  # Dense layers
 dropout_layers = (0.2, 0.2, )  # Dropout layers
 
 lr = 0.001  # Learning rate
-gamma = 0.95  # Discount factor
+gamma = 0.0  # Discount factor
 min_epsilon = 0.05  # Minimal and final chance of choosing random action
 decay_episodes = episodes // 10  # Number of episodes to decay from 1.0 to `min_epsilon`
 
@@ -41,18 +39,15 @@ with open(df_dqn, "w", newline='') as f:
 # Run the model ten times
 for _ in tqdm(range(10)):
     # New train-test split
-    X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(
-        X_train, y_train, X_test, y_test, min_class, maj_class, val_frac=0.2, print_stats=False)
-
-    # Change Python environment to TF environment
-    train_env = TFPyEnvironment(ClassifyEnv(X_train, y_train, imb_rate))
+    X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(X_train, y_train, X_test, y_test,
+                                                                        min_class, maj_class, val_frac=0.2, print_stats=False)
 
     model = TrainCustomDDQN(episodes, warmup_episodes, lr, gamma, min_epsilon, decay_episodes, target_model_update=target_model_update,
                             target_update_tau=target_update_tau, progressbar=False, batch_size=batch_size,
                             collect_steps_per_episode=collect_steps_per_episode)
 
-    model.compile_model(train_env, conv_layers, dense_layers, dropout_layers)
-    model.train(X_val, y_val)
+    model.compile_model(X_train, y_train, imb_rate, conv_layers, dense_layers, dropout_layers)
+    model.train(X_val, y_val, "F1")
 
     # Predictions of model for `X_test`
     y_pred = network_predictions(model.agent._target_q_network, X_test)
