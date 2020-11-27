@@ -28,11 +28,11 @@ min_class = [1]  # Labels of the minority classes
 maj_class = [0]  # Labels of the majority classes
 X_train, y_train, X_test, y_test = load_creditcard(normalization=True, fp_train="./data/credit0.csv", fp_test="./data/credit1.csv")
 
-df_dqn = "./results/creditcardfraud/dqn.csv"
+fp_dqn = "./results/creditcardfraud/dqn.csv"
 fieldnames = ("Gmean", "F1", "Precision", "Recall", "TP", "TN", "FP", "FN")
 
 # Create empty files
-with open(df_dqn, "w", newline='') as f:
+with open(fp_dqn, "w", newline='') as f:
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
 
@@ -53,7 +53,7 @@ for _ in tqdm(range(10)):
     y_pred = network_predictions(model.agent._target_q_network, X_test)
     dqn_stats = classification_metrics(y_test, y_pred)
 
-    # Write current baseline run to `fp_baseline`
-    with open(df_dqn, 'a', newline='') as f:
+    # Write current DQN run to `fp_dqn`
+    with open(fp_dqn, 'a', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writerow(dqn_stats)
