@@ -1,22 +1,22 @@
 import csv
 
-from imbDRL.data import get_train_test_val, load_creditcard
+from imbDRL.data import get_train_test_val, load_aki
 from imbDRL.examples.ddqn.example_classes import TrainCustomDDQN
 from imbDRL.metrics import classification_metrics, network_predictions
 from tqdm import tqdm
 
-episodes = 25_000  # Total number of episodes
-warmup_episodes = 170_000  # Amount of warmup steps to collect data with random policy
+episodes = 16_000  # Total number of episodes
+warmup_episodes = 32_000  # Amount of warmup steps to collect data with random policy
 memory_length = warmup_episodes  # Max length of the Replay Memory
 batch_size = 32
 collect_steps_per_episode = 2000
 collect_every = episodes // 100
 
-target_model_update = episodes // 30  # Period to overwrite the target Q-network with the default Q-network
+target_model_update = episodes // 60  # Period to overwrite the target Q-network with the default Q-network
 target_update_tau = 1  # Soften the target model update
 
 conv_layers = None  # Convolutional layers
-dense_layers = (256, 256, )  # Dense layers
+dense_layers = (128, 128, )  # Dense layers
 dropout_layers = (0.2, 0.2, )  # Dropout layers
 
 lr = 0.001  # Learning rate
@@ -24,12 +24,12 @@ gamma = 0.0  # Discount factor
 min_epsilon = 0.5  # Minimal and final chance of choosing random action
 decay_episodes = episodes // 10  # Number of episodes to decay from 1.0 to `min_epsilon`
 
-imb_rate = 0.001729  # Imbalance rate
+imb_rate = 0.2318  # Imbalance rate
 min_class = [1]  # Labels of the minority classes
 maj_class = [0]  # Labels of the majority classes
-X_train, y_train, X_test, y_test = load_creditcard(normalization=True, fp_train="./data/credit0.csv", fp_test="./data/credit1.csv")
+X_train, y_train, X_test, y_test = load_aki(normalization=True, fp_train="./data/aki0.csv", fp_test="./data/aki1.csv")
 
-fp_dqn = "./results/creditcardfraud/dqn.csv"
+fp_dqn = "./results/aki/dqn.csv"
 fieldnames = ("Gmean", "F1", "Precision", "Recall", "TP", "TN", "FP", "FN")
 
 # Create empty files
