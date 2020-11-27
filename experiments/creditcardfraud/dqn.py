@@ -8,8 +8,9 @@ from tqdm import tqdm
 episodes = 25_000  # Total number of episodes
 warmup_episodes = 170_000  # Amount of warmup steps to collect data with random policy
 memory_length = warmup_episodes  # Max length of the Replay Memory
-batch_size = 2048
-collect_steps_per_episode = 0
+batch_size = 32
+collect_steps_per_episode = 2000
+collect_every = episodes // 100
 
 target_model_update = episodes // 30  # Period to overwrite the target Q-network with the default Q-network
 target_update_tau = 1  # Soften the target model update
@@ -20,7 +21,7 @@ dropout_layers = (0.2, 0.2, )  # Dropout layers
 
 lr = 0.001  # Learning rate
 gamma = 0.0  # Discount factor
-min_epsilon = 0.05  # Minimal and final chance of choosing random action
+min_epsilon = 0.5  # Minimal and final chance of choosing random action
 decay_episodes = episodes // 10  # Number of episodes to decay from 1.0 to `min_epsilon`
 
 imb_rate = 0.001729  # Imbalance rate
