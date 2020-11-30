@@ -51,7 +51,8 @@ for _ in tqdm(range(10)):
     model.train(X_val, y_val, "F1")
 
     # Predictions of model for `X_test`
-    y_pred = network_predictions(model.agent._target_q_network, X_test)
+    best_network = model.load_model(fp=model.model_dir)
+    y_pred = network_predictions(best_network, X_test)
     dqn_stats = classification_metrics(y_test, y_pred)
 
     # Write current DQN run to `fp_dqn`
