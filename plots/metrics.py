@@ -1,3 +1,5 @@
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -7,21 +9,18 @@ sns.set(context="paper")
 sns.set_palette("colorblind")
 
 fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(1, 5, figsize=(12, 3), sharey=True)
-# p = 0.5
+P = 0.5  # Chance of choosing positive class
 n_neg = 1_000  # Number of negative elements
 negatives = np.zeros(n_neg)  # Const list of True Negatives
-rng = np.random.default_rng()  # Random number generator
 acc, spec, recall, prec, f1, imb_rate = [], [], [], [], [], []
 
-for n_pos in np.arange(1, n_neg + 1, 5):
+for n_pos in np.arange(1, n_neg + 1, 10):
     y_true = np.concatenate((np.ones(n_pos), negatives))  # Ground Truth
-    y_pred = rng.integers(0, 1, size=n_pos + n_neg, endpoint=True)  # Generate (n_pos + n_neg) random predictions
-
-    # y_pred = np.concatenate((np.ones(math.ceil(positive * p)),  # P percentage is correct for positive class
-    #                          np.zeros(math.ceil(positive * (1 - p))),  # 1-P percentage is incorrect for positive class
-    #                          np.ones(math.ceil(negative * p)),  # P percentage is incorrect for negative class
-    #                          np.zeros(math.ceil(negative * (1 - p)))))  # 1-P percentage is correct for negative class
-    # y_pred = np.random.choice(2, size=positive + negative, p=[p, 1 - p])
+    # y_pred = np.concatenate((np.ones(math.ceil(n_pos * P)),  # P percentage is correct for positive class
+    #                          np.zeros(math.ceil(n_pos * (1 - P))),  # 1-P percentage is incorrect for positive class
+    #                          np.ones(math.ceil(n_neg * P)),  # P percentage is incorrect for negative class
+    #                          np.zeros(math.ceil(n_neg * (1 - P)))))  # 1-P percentage is correct for negative class
+    y_pred = np.random.choice(2, size=n_pos + n_neg, p=[1 - P, P])  # Choose 0 with p=1-P or 1 with p=P
 
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
 
@@ -39,10 +38,10 @@ sns.lineplot(x=imb_rate, y=recall, lw=1, ax=ax3)
 sns.lineplot(x=imb_rate, y=prec, lw=1, ax=ax4)
 sns.lineplot(x=imb_rate, y=f1, lw=1, ax=ax5)
 
-fig.suptitle("Verandering van imbalance rate en gevolg voor verschillende metriek.\n"
+fig.suptitle("Verandering van imbalance ratio en gevolg voor verschillende metriek.\n"
              f"Artificiële dataset met {n_neg} waarden voor negatieve klasse en "
              f"1 tot en met {n_neg} waarden voor positieve klasse.\n"
-             "Voorspellingen met kans 0.5 voor iedere klasse.")
+             f"Voorspellingen met kans {P} voor de minderheidsklasse.")
 
 for ax, title in zip((ax1, ax2, ax3, ax4, ax5), ("Accuracy", "Specificity", "Sensitivity/Recall", "Precision", "F1")):
     ax.set_title(title)
