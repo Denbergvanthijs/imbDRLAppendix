@@ -21,10 +21,10 @@ dropout_layers = None  # Dropout layers
 lr = 0.00025  # Learning rate
 gamma = 0.1  # Discount factor
 min_epsilon = 0.01  # Minimal and final chance of choosing random action
-decay_episodes = 100_000  # Number of episodes to decay from 1.0 to `min_epsilon`, divided by 4
+decay_episodes = 100_000  # Number of episodes to decay from 1.0 to `min_epsilon`
 
 imb_rate = 0.01  # Imbalance rate
-min_class = [2]  # Minority classes, same setup as in original paper
+min_class = [2]  # Minority classes
 maj_class = [0, 1, 3, 4, 5, 6, 7, 8, 9]  # Majority classes
 X_train, y_train, X_test, y_test, = load_image("mnist")
 
