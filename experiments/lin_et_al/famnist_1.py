@@ -23,11 +23,11 @@ gamma = 0.1  # Discount factor
 min_epsilon = 0.01  # Minimal and final chance of choosing random action
 decay_episodes = 100_000  # Number of episodes to decay from 1.0 to `min_epsilon`
 
-min_class = [2]  # Minority classes
-maj_class = [0, 1, 3, 4, 5, 6, 7, 8, 9]  # Majority classes
-X_train, y_train, X_test, y_test, = load_image("mnist")
+min_class = [0, 2]  # Minority classes
+maj_class = [1, 3]  # Majority classes
+X_train, y_train, X_test, y_test, = load_image("famnist")
 
-fp_dqn = "./results/lin/mnist.csv"
+fp_dqn = "./results/lin/famnist_1.csv"
 fieldnames = ("Gmean", "F1", "Precision", "Recall", "TP", "TN", "FP", "FN", "P")
 
 # Create empty files
@@ -35,7 +35,7 @@ with open(fp_dqn, "w", newline='') as f:
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
 
-for p in (0.01, 0.002, 0.001, 0.0005):
+for p in (0.04, 0.02, 0.01, 0.005):
     # Run the model ten times
     for _ in tqdm(range(10), desc=f"Running model for imbalance ratio:{p}"):
         # New train-test split
