@@ -25,7 +25,7 @@ decay_episodes = 100_000  # Number of episodes to decay from 1.0 to `min_epsilon
 
 min_class = [4, 5, 6]  # Minority classes
 maj_class = [7, 8, 9]  # Majority classes
-X_train, y_train, X_test, y_test, = load_image("famnist")
+_X_train, _y_train, _X_test, _y_test = load_image("famnist")
 
 fp_dqn = "./results/lin/famnist_2.csv"
 fieldnames = ("Gmean", "F1", "Precision", "Recall", "TP", "TN", "FP", "FN", "P")
@@ -39,7 +39,7 @@ for p in (0.04, 0.02, 0.01, 0.005):
     # Run the model ten times
     for _ in tqdm(range(10), desc=f"Running model for imbalance ratio:{p}"):
         # New train-test split
-        X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(X_train, y_train, X_test, y_test, min_class, maj_class,
+        X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(_X_train, _y_train, _X_test, _y_test, min_class, maj_class,
                                                                             imb_rate=p, imb_test=False, val_frac=0.1, print_stats=False)
 
         model = TrainCustomDDQN(episodes, warmup_episodes, lr, gamma, min_epsilon, decay_episodes, target_update_tau=target_update_tau,
