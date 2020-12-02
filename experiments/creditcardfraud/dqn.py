@@ -27,7 +27,7 @@ decay_episodes = episodes // 10  # Number of episodes to decay from 1.0 to `min_
 imb_rate = 0.001729  # Imbalance rate
 min_class = [1]  # Labels of the minority classes
 maj_class = [0]  # Labels of the majority classes
-X_train, y_train, X_test, y_test = load_creditcard(normalization=True, fp_train="./data/credit0.csv", fp_test="./data/credit1.csv")
+_X_train, _y_train, _X_test, _y_test = load_creditcard(normalization=True, fp_train="./data/credit0.csv", fp_test="./data/credit1.csv")
 
 fp_dqn = "./results/creditcardfraud/dqn.csv"
 fieldnames = ("Gmean", "F1", "Precision", "Recall", "TP", "TN", "FP", "FN")
@@ -40,8 +40,8 @@ with open(fp_dqn, "w", newline='') as f:
 # Run the model ten times
 for _ in tqdm(range(10)):
     # New train-test split
-    X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(X_train, y_train, X_test, y_test,
-                                                                        min_class, maj_class, val_frac=0.2, print_stats=False)
+    X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(_X_train, _y_train, _X_test, _y_test, min_class, maj_class,
+                                                                        val_frac=0.2, print_stats=False)
 
     model = TrainCustomDDQN(episodes, warmup_episodes, lr, gamma, min_epsilon, decay_episodes, target_model_update=target_model_update,
                             target_update_tau=target_update_tau, progressbar=False, batch_size=batch_size,

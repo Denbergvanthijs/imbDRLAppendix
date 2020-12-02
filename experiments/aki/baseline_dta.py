@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 min_class = [1]  # Labels of the minority classes
 maj_class = [0]  # Labels of the majority classes
-X_train, y_train, X_test, y_test = load_aki(normalization=True, fp_train="./data/aki0.csv", fp_test="./data/aki1.csv")
+_X_train, _y_train, _X_test, _y_test = load_aki(normalization=True, fp_train="./data/aki0.csv", fp_test="./data/aki1.csv")
 metrics = [Precision(name="precision"), Recall(name="recall")]
 
 # Thresholds < 0.5 will result in higher recall than baseline
@@ -33,8 +33,8 @@ with open(fp_dta, "w", newline='') as f:
 # Run the model ten times
 for _ in tqdm(range(10)):
     # New train-test split
-    X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(
-        X_train, y_train, X_test, y_test, min_class, maj_class, val_frac=0.2, print_stats=False)
+    X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(_X_train, _y_train, _X_test, _y_test, min_class, maj_class,
+                                                                        val_frac=0.2, print_stats=False)
 
     model = Sequential([Dense(256, activation="relu", input_shape=(X_train.shape[-1],)),
                         Dropout(0.2),
