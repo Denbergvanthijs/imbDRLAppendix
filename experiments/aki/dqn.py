@@ -12,11 +12,11 @@ batch_size = 32
 collect_steps_per_episode = 2000
 collect_every = episodes // 100
 
-target_model_update = episodes // 60  # Period to overwrite the target Q-network with the default Q-network
+target_model_update = episodes // 30  # Period to overwrite the target Q-network with the default Q-network
 target_update_tau = 1  # Soften the target model update
 
 conv_layers = None  # Convolutional layers
-dense_layers = (128, 128, )  # Dense layers
+dense_layers = (256, 256, )  # Dense layers
 dropout_layers = (0.2, 0.2, )  # Dropout layers
 
 lr = 0.001  # Learning rate
