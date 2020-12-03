@@ -5,7 +5,7 @@ from imbDRL.examples.ddqn.example_classes import TrainCustomDDQN
 from imbDRL.metrics import classification_metrics, network_predictions
 from tqdm import tqdm
 
-episodes = 16_000  # Total number of episodes
+episodes = 25_000  # Total number of episodes
 warmup_episodes = 32_000  # Amount of warmup steps to collect data with random policy
 memory_length = warmup_episodes  # Max length of the Replay Memory
 batch_size = 32
