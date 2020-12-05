@@ -25,7 +25,7 @@ decay_episodes = 100_000  # Number of episodes to decay from 1.0 to `min_epsilon
 
 min_class = [1]  # Minority classes
 maj_class = [3, 4, 5, 6]  # Majority classes
-_X_train, _y_train, _X_test, _y_test = load_image("cifar")
+_X_train, _y_train, _X_test, _y_test = load_image("cifar10")
 
 fp_dqn = "./results/lin/cifar_1.csv"
 fieldnames = ("Gmean", "F1", "Precision", "Recall", "TP", "TN", "FP", "FN", "P")

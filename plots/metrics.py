@@ -43,7 +43,7 @@ fig.suptitle("Verandering van imbalance ratio en gevolg voor verschillende metri
              f"1 tot en met {n_neg} waarden voor positieve klasse.\n"
              f"Voorspellingen met kans {P} voor de minderheidsklasse.")
 
-for ax, title in zip((ax1, ax2, ax3, ax4, ax5), ("Accuracy", "Specificity", "Sensitivity/Recall", "Precision", "F1")):
+for ax, title in zip((ax1, ax2, ax3, ax4, ax5), ("Nauwkeurigheid", "Specificiteit", "Sensitiviteit/Recall", "Precision", "F1-score")):
     ax.set_title(title)
 
 plt.subplots_adjust(top=0.80)
