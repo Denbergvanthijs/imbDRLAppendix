@@ -19,7 +19,7 @@ conv_layers = None  # Convolutional layers
 dense_layers = (256, 256, )  # Dense layers
 dropout_layers = (0.2, 0.2, )  # Dropout layers
 
-lr = 0.001  # Learning rate
+lr = 0.00025  # Learning rate
 gamma = 0.0  # Discount factor
 min_epsilon = 0.5  # Minimal and final chance of choosing random action
 decay_episodes = episodes // 10  # Number of episodes to decay from 1.0 to `min_epsilon`

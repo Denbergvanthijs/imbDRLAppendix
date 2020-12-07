@@ -14,6 +14,7 @@ collect_every = episodes // 100
 
 target_model_update = episodes // 30  # Period to overwrite the target Q-network with the default Q-network
 target_update_tau = 1  # Soften the target model update
+n_step_update = 4
 
 conv_layers = None  # Convolutional layers
 dense_layers = (256, 256, )  # Dense layers
@@ -44,7 +45,7 @@ for _ in tqdm(range(10)):
                                                                         val_frac=0.2, print_stats=False)
 
     model = TrainCustomDDQN(episodes, warmup_episodes, lr, gamma, min_epsilon, decay_episodes, target_model_update=target_model_update,
-                            target_update_tau=target_update_tau, progressbar=False, batch_size=batch_size,
+                            target_update_tau=target_update_tau, progressbar=False, batch_size=batch_size, n_step_update=n_step_update,
                             collect_steps_per_episode=collect_steps_per_episode, collect_every=collect_every)
 
     model.compile_model(X_train, y_train, imb_rate, conv_layers, dense_layers, dropout_layers)
