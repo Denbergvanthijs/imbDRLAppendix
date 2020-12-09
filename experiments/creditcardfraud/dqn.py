@@ -44,7 +44,7 @@ for _ in tqdm(range(10)):
                                                                         val_frac=0.2, print_stats=False)
 
     model = TrainCustomDDQN(episodes, warmup_episodes, lr, gamma, min_epsilon, decay_episodes, target_model_update=target_model_update,
-                            target_update_tau=target_update_tau, progressbar=False, batch_size=batch_size,
+                            target_update_tau=target_update_tau, progressbar=False, batch_size=batch_size, memory_length=memory_length,
                             collect_steps_per_episode=collect_steps_per_episode, collect_every=collect_every)
 
     model.compile_model(X_train, y_train, imb_rate, conv_layers, dense_layers, dropout_layers)
