@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 from imbDRL.utils import imbalance_ratio
 
-df_total = pd.read_csv("./data/aki_alleventscleaned.csv", dtype={"subject_id": int, "hadm_id": int, "itemid": int, "charttime": str, "valuenum": float},
+df_total = pd.read_csv("./data/aki_alleventscleaned.csv",
+                       dtype={"subject_id": int, "hadm_id": int, "itemid": int, "charttime": str, "valuenum": float},
                        parse_dates=["charttime"], infer_datetime_format=True)
 print(f"{df_total.subject_id.nunique():_} total patients with relevant parameters; {df_total.hadm_id.nunique():_} total ICU admissions;")
 
@@ -55,6 +56,7 @@ print(f"{(total := df_complete.isna().sum().sum()):_} ({total / df_complete.size
 # Thus, no interpolation will take place (also: for interpolation a minimum of 1 value is required)
 df_complete.dropna(inplace=True)
 print(f"{(total := df_complete.shape[0]):_} hospitalisations with at least one measurement for each proxy;\n"
-      f"{(cases := df_complete.aki.sum())} ({cases / total:.6f} %) AKI-cases; Imbalance ratio: {imbalance_ratio(df_complete['aki'].to_numpy())}")
+      f"{(cases := df_complete.aki.sum())} ({cases / total:.6f} %) AKI-cases; "
+      f"Imbalance ratio: {imbalance_ratio(df_complete['aki'].to_numpy())}")
 df_complete.to_csv("./data/aki_dataset.csv")
 print(f"Shape of dataset: {df_complete.shape}")
