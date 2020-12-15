@@ -33,7 +33,7 @@ def fp_to_resized_image(filepath: str):
 
 
 def generate_dataset(filepath: str):
-    ds_files = tf.data.Dataset.list_files(filepath)
+    ds_files = tf.data.Dataset.list_files(filepath + "/*.png")
     ds_images = ds_files.map(fp_to_resized_image).batch(ds_files.cardinality())  # Map preprocessing function to all files in `ds_files`
 
     X_data, y_data = np.empty(1), np.empty(1)
@@ -96,7 +96,7 @@ def data_exploration(df):
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    X_data, y_data = generate_dataset(args.imagepath + "**/*.png")
+    X_data, y_data = generate_dataset(args.imagepath)
 
     print(X_data.shape, y_data.shape)
     print(X_data.dtype, y_data.dtype)
