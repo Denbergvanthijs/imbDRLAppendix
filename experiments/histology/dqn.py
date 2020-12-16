@@ -1,7 +1,6 @@
 import argparse
 import csv
 
-import numpy as np
 from imbDRL.data import get_train_test_val
 from imbDRL.examples.ddqn.example_classes import TrainCustomDDQN
 from imbDRL.metrics import classification_metrics, network_predictions
@@ -15,15 +14,15 @@ parser.add_argument("imagepath", metavar="Path", type=str, nargs="?", default=".
 parser.add_argument("csvpath", metavar="Path", type=str, nargs="?", default="./data/AE_20201412.csv", help="The path to the csv-file.")
 args = parser.parse_args()
 
-episodes = 120_000  # Total number of episodes
-warmup_episodes = 10_000  # Amount of warmup steps to collect data with random policy
-memory_length = 10_000  # Max length of the Replay Memory
+episodes = 1200  # Total number of episodes
+warmup_episodes = 1_000  # Amount of warmup steps to collect data with random policy
+memory_length = 1_000  # Max length of the Replay Memory
 batch_size = 32
-collect_steps_per_episode = 1000
-collect_every = 1000
+collect_steps_per_episode = 10
+collect_every = 10
 n_step_update = 4
 
-target_model_update = 10_000  # Period to overwrite the target Q-network with the default Q-network
+target_model_update = 100  # Period to overwrite the target Q-network with the default Q-network
 target_update_tau = 1  # Soften the target model update
 
 conv_layers = ((32, (5, 5), 2), (32, (5, 5), 2), )  # Convolutional layers
@@ -47,7 +46,7 @@ df = df[df.dateok.dt.year >= 2010]
 print(f"Restenosis:\n{df.restenos.value_counts().to_string()}")
 
 y = relabel_by_column(y, df["restenos"], default=-1)
-_X_train, _X_test, _y_train, _y_test = train_test_split(X, y, random_state=42)  # Ensure same train/test split every time
+_X_train, _X_test, _y_train, _y_test = train_test_split(X, y, test_size=0.2, random_state=42)  # Ensure same train/test split every time
 fp_dqn = "./results/histology/dqn.csv"
 fieldnames = ("Gmean", "F1", "Precision", "Recall", "TP", "TN", "FP", "FN")
 
