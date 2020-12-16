@@ -1,6 +1,7 @@
 import argparse
 import csv
 
+import numpy as np
 from imbDRL.data import get_train_test_val
 from imbDRL.examples.ddqn.example_classes import TrainCustomDDQN
 from imbDRL.metrics import classification_metrics, network_predictions
@@ -15,8 +16,8 @@ parser.add_argument("csvpath", metavar="Path", type=str, nargs="?", default="./d
 args = parser.parse_args()
 
 episodes = 120_000  # Total number of episodes
-warmup_episodes = 50_000  # Amount of warmup steps to collect data with random policy
-memory_length = 100_00  # Max length of the Replay Memory
+warmup_episodes = 10_000  # Amount of warmup steps to collect data with random policy
+memory_length = 10_000  # Max length of the Replay Memory
 batch_size = 32
 collect_steps_per_episode = 1000
 collect_every = 1000
@@ -34,12 +35,17 @@ gamma = 0.1  # Discount factor
 min_epsilon = 0.01  # Minimal and final chance of choosing random action
 decay_episodes = 100_000  # Number of episodes to decay from 1.0 to `min_epsilon`
 
-imb_rate = 0.08  # Imbalance rate
-min_class = [-1]  # Labels of the minority classes
+imb_rate = 0.08235  # Imbalance rate
+min_class = [1]  # Labels of the minority classes
 maj_class = [0]  # Labels of the majority classes
 
 X, y = generate_dataset(args.imagepath)
 df = read_dataframe(args.csvpath)
+df = df[df.Hospital == "2"]
+df = df[df.Gender == "1"]
+df = df[df.dateok.dt.year >= 2010]
+print(f"Restenosis:\n{df.restenos.value_counts().to_string()}")
+
 y = relabel_by_column(y, df["restenos"], default=-1)
 _X_train, _X_test, _y_train, _y_test = train_test_split(X, y, random_state=42)  # Ensure same train/test split every time
 fp_dqn = "./results/histology/dqn.csv"
@@ -55,9 +61,8 @@ for _ in tqdm(range(10)):
     # New train-test split
     X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(_X_train, _y_train, _X_test, _y_test, min_class, maj_class,
                                                                         val_frac=0.2, print_stats=False)
-    print([x.shape for x in (X_train, X_test, X_val, y_train, y_test, y_val)])
     model = TrainCustomDDQN(episodes, warmup_episodes, lr, gamma, min_epsilon, decay_episodes, target_model_update=target_model_update,
-                            target_update_tau=target_update_tau, progressbar=False, batch_size=batch_size, memory_length=memory_length,
+                            target_update_tau=target_update_tau, progressbar=True, batch_size=batch_size, memory_length=memory_length,
                             collect_steps_per_episode=collect_steps_per_episode, collect_every=collect_every, n_step_update=n_step_update)
 
     model.compile_model(X_train, y_train, imb_rate, conv_layers, dense_layers, dropout_layers)

@@ -9,10 +9,6 @@ import tensorflow as tf
 
 sns.set_palette("colorblind")
 
-parser = argparse.ArgumentParser(description="Generates tf.dataset based on Path argument.")
-parser.add_argument("imagepath", metavar="Path", type=str, nargs="?", default="./data/hist", help="The path to the folder containing PNGs.")
-parser.add_argument("csvpath", metavar="Path", type=str, nargs="?", default="./data/AE_20201412.csv", help="The path to the csv-file.")
-
 
 @tf.function
 def fp_to_resized_image(filepath: str):
@@ -95,6 +91,11 @@ def data_exploration(df):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generates tf.dataset based on Path argument.")
+    parser.add_argument("imagepath", metavar="Path", type=str, nargs="?",
+                        default="./data/hist", help="The path to the folder containing PNGs.")
+    parser.add_argument("csvpath", metavar="Path", type=str, nargs="?", default="./data/AE_20201412.csv", help="The path to the csv-file.")
+
     args = parser.parse_args()
     X_data, y_data = generate_dataset(args.imagepath)
 
@@ -102,6 +103,10 @@ if __name__ == "__main__":
     print(X_data.dtype, y_data.dtype)
 
     df = read_dataframe(args.csvpath)
+    df = df[df.Hospital == "2"]
+    df = df[df.Gender == "1"]
+    df = df[df.dateok.dt.year >= 2010]
+    print(df.restenos.value_counts())
     # data_exploration(df)
     y_data_labeled = relabel_by_column(y_data, df["restenos"], default=-1)
     print(f"Counter: {dict(zip(*np.unique(y_data_labeled, return_counts=True)))}")
