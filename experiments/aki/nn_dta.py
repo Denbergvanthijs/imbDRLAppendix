@@ -14,16 +14,16 @@ maj_class = [0]  # Labels of the majority classes
 _X_train, _y_train, _X_test, _y_test = load_aki(normalization=True, fp_train="./data/aki0.csv", fp_test="./data/aki1.csv")
 metrics = [Precision(name="precision"), Recall(name="recall")]
 
-# Thresholds < 0.5 will result in higher recall than baseline
-# Thresholds > 0.5 will result in higher precision than baseline
+# Thresholds < 0.5 will result in higher recall than standard NN
+# Thresholds > 0.5 will result in higher precision than standard NN
 thresholds = np.arange(0.0, 1, 0.01)
 
-fp_baseline = "./results/aki/baseline.csv"
+fp_NN = "./results/aki/nn.csv"
 fp_dta = "./results/aki/dta.csv"
 fieldnames = ("Gmean", "F1", "Precision", "Recall", "TP", "TN", "FP", "FN")
 
 # Create empty files
-with open(fp_baseline, "w", newline='') as f:
+with open(fp_NN, "w", newline='') as f:
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
 with open(fp_dta, "w", newline='') as f:
@@ -47,12 +47,12 @@ for _ in tqdm(range(10)):
     # Predictions of model for `X_test`
     y_pred_val = model(X_val).numpy()
     y_pred_test = model(X_test).numpy()
-    baseline_stats = classification_metrics(y_test, np.around(y_pred_test).astype(int))
+    NN_stats = classification_metrics(y_test, np.around(y_pred_test).astype(int))
 
-    # Write current baseline run to `fp_baseline`
-    with open(fp_baseline, 'a', newline='') as f:
+    # Write current NN run to `fp_NN`
+    with open(fp_NN, 'a', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writerow(baseline_stats)
+        writer.writerow(NN_stats)
 
     # Validation F1 of every threshold
     f1scores = [classification_metrics(y_val, (y_pred_val >= th).astype(int)).get("F1") for th in thresholds]
