@@ -5,8 +5,9 @@ import numpy as np
 from imbDRL.data import get_train_test_val
 from imbDRL.metrics import classification_metrics
 from sklearn.model_selection import train_test_split
-from tensorflow.keras import Sequential
-from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras import Input, Sequential
+from tensorflow.keras.layers import (Conv2D, Dense, Dropout, Flatten,
+                                     MaxPooling2D)
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.optimizers import Adam
 from tqdm import tqdm
@@ -27,6 +28,9 @@ df = df[df.Gender == "1"]
 print(f"Restenosis:\n{df.restenos.value_counts().to_string()}")
 
 y = relabel_by_column(y, df["restenos"], default=-1)
+# y = np.array([1, 1, 1, 1, 1, 0, 0, 0, 0, 0])
+# y = np.concatenate([y, y, y])
+# X = np.concatenate([X, X, X])
 _X_train, _X_test, _y_train, _y_test = train_test_split(X, y, test_size=0.2, random_state=42)  # Ensure same train/test split every time
 
 
@@ -55,9 +59,12 @@ for _ in tqdm(range(10)):
     # New train-test split
     X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(_X_train, _y_train, _X_test, _y_test, min_class, maj_class,
                                                                         val_frac=0.2, print_stats=False)
-
-    model = Sequential([Dense(256, activation="relu", input_shape=(X_train.shape[-1],)),
-                        Dropout(0.2),
+    model = Sequential([Input(shape=X_train.shape[1:]),
+                        Conv2D(32, kernel_size=(5, 5), activation="relu"),
+                        MaxPooling2D(pool_size=(2, 2)),
+                        Conv2D(32, kernel_size=(5, 5), activation="relu"),
+                        MaxPooling2D(pool_size=(2, 2)),
+                        Flatten(),
                         Dense(256, activation="relu"),
                         Dropout(0.2),
                         Dense(1, activation="sigmoid")])
