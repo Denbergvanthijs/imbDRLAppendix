@@ -13,11 +13,12 @@ parser.add_argument("csvpath", metavar="Path", type=str, nargs="?", default="./d
 args = parser.parse_args()
 
 df = read_dataframe(args.csvpath)
+df = df[df.Gender == "1"]
 # df = df[df.Hospital == "2"]
 # df = df[df.dateok.dt.year >= 2010]
-df = df[df.Gender == "1"]
 df = df[df.restenos != -1]
 df = df[df.restenos != 2]
+print(df["restenos"].value_counts())
 y = df["restenos"].to_numpy()
 df.drop(columns="restenos", inplace=True)
 df["month"] = df["dateok"].dt.month

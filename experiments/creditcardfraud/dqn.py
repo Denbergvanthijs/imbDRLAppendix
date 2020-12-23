@@ -5,14 +5,14 @@ from imbDRL.examples.ddqn.example_classes import TrainCustomDDQN
 from imbDRL.metrics import classification_metrics, network_predictions
 from tqdm import tqdm
 
-episodes = 25_000  # Total number of episodes
+episodes = 100_000  # Total number of episodes
 warmup_episodes = 170_000  # Amount of warmup steps to collect data with random policy
 memory_length = warmup_episodes  # Max length of the Replay Memory
 batch_size = 32
 collect_steps_per_episode = 2000
-collect_every = episodes // 100
+collect_every = 500
 
-target_model_update = episodes // 30  # Period to overwrite the target Q-network with the default Q-network
+target_model_update = 800  # Period to overwrite the target Q-network with the default Q-network
 target_update_tau = 1  # Soften the target model update
 
 conv_layers = None  # Convolutional layers
