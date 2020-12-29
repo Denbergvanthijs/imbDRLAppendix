@@ -1,7 +1,7 @@
 import csv
 
 import numpy as np
-from imbDRL.data import get_train_test_val, load_aki
+from imbDRL.data import get_train_test_val, load_csv
 from imbDRL.metrics import classification_metrics
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense, Dropout
@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 min_class = [1]  # Labels of the minority classes
 maj_class = [0]  # Labels of the majority classes
-_X_train, _y_train, _X_test, _y_test = load_aki(normalization=True, fp_train="./data/aki0.csv", fp_test="./data/aki1.csv")
+_X_train, _y_train, _X_test, _y_test = load_csv("./data/aki0.csv", "./data/aki1.csv", "aki", ["hadm_id"], normalization=True)
 metrics = [Precision(name="precision"), Recall(name="recall")]
 
 # Thresholds < 0.5 will result in higher recall than standard NN

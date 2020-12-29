@@ -1,9 +1,9 @@
 import numpy as np
-from imbDRL.data import load_aki
+from imbDRL.data import load_csv
 from imbDRL.metrics import classification_metrics
 from sklearn.dummy import DummyClassifier
 
-_, _, X_test, y_test = load_aki(normalization=True, fp_train="./data/aki0.csv", fp_test="./data/aki1.csv")
+_, _, X_test, y_test = load_csv("./data/aki0.csv", "./data/aki1.csv", "aki", ["hadm_id"], normalization=True)
 
 
 def uniform_baseline(X, y):

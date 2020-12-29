@@ -1,7 +1,7 @@
 import csv
 
 from imbDRL.agents.ddqn import TrainDDQN
-from imbDRL.data import get_train_test_val, load_creditcard
+from imbDRL.data import get_train_test_val, load_csv
 from imbDRL.metrics import classification_metrics, network_predictions
 from tqdm import tqdm
 
@@ -28,7 +28,7 @@ decay_episodes = episodes // 10  # Number of episodes to decay from 1.0 to `min_
 imb_rate = 0.001729  # Imbalance rate
 min_class = [1]  # Labels of the minority classes
 maj_class = [0]  # Labels of the majority classes
-_X_train, _y_train, _X_test, _y_test = load_creditcard(normalization=True, fp_train="./data/credit0.csv", fp_test="./data/credit1.csv")
+_X_train, _y_train, _X_test, _y_test = load_csv("./data/credit0.csv", "./data/credit1.csv", "Class", ["Time"], normalization=True)
 
 fp_dqn = "./results/creditcardfraud/dqn.csv"
 fieldnames = ("Gmean", "F1", "Precision", "Recall", "TP", "TN", "FP", "FN")

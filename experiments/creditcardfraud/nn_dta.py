@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 min_class = [1]  # Labels of the minority classes
 maj_class = [0]  # Labels of the majority classes
-_X_train, _y_train, _X_test, _y_test = load_creditcard(normalization=True, fp_train="./data/credit0.csv", fp_test="./data/credit1.csv")
+_X_train, _y_train, _X_test, _y_test = load_csv("./data/credit0.csv", "./data/credit1.csv", "Class", ["Time"], normalization=True)
 metrics = [Precision(name="precision"), Recall(name="recall")]
 
 # Thresholds < 0.5 will result in higher recall than standard NN

@@ -1,10 +1,9 @@
 import numpy as np
-from imbDRL.data import load_creditcard
+from imbDRL.data import load_csv
 from imbDRL.metrics import classification_metrics
 from sklearn.dummy import DummyClassifier
 
-_, _, X_test, y_test = load_creditcard(normalization=True, fp_train="./data/credit0.csv", fp_test="./data/credit1.csv")
-
+_, _, X_test, y_test = load_csv("./data/credit0.csv", "./data/credit1.csv", "Class", ["Time"], normalization=True)
 
 def uniform_baseline(X, y):
     uniform_clf = DummyClassifier(strategy="uniform")
