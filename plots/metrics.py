@@ -1,5 +1,3 @@
-import math
-
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -16,10 +14,6 @@ acc, spec, recall, prec, f1, imb_rate = [], [], [], [], [], []
 
 for n_pos in np.arange(1, n_neg + 1, 10):
     y_true = np.concatenate((np.ones(n_pos), negatives))  # Ground Truth
-    # y_pred = np.concatenate((np.ones(math.ceil(n_pos * P)),  # P percentage is correct for positive class
-    #                          np.zeros(math.ceil(n_pos * (1 - P))),  # 1-P percentage is incorrect for positive class
-    #                          np.ones(math.ceil(n_neg * P)),  # P percentage is incorrect for negative class
-    #                          np.zeros(math.ceil(n_neg * (1 - P)))))  # 1-P percentage is correct for negative class
     y_pred = np.random.choice(2, size=n_pos + n_neg, p=[1 - P, P])  # Choose 0 with p=1-P or 1 with p=P
 
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
