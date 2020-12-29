@@ -1,7 +1,7 @@
 import csv
 
+from imbDRL.agents.ddqn import TrainDDQN
 from imbDRL.data import get_train_test_val, load_image
-from imbDRL.examples.ddqn.example_classes import TrainCustomDDQN
 from imbDRL.metrics import classification_metrics, network_predictions
 from tqdm import tqdm
 
@@ -42,15 +42,15 @@ for p in (0.04, 0.02, 0.01, 0.005):
         X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(_X_train, _y_train, _X_test, _y_test, min_class, maj_class,
                                                                             imb_rate=p, imb_test=False, val_frac=0.1, print_stats=False)
 
-        model = TrainCustomDDQN(episodes, warmup_episodes, lr, gamma, min_epsilon, decay_episodes, target_update_tau=target_update_tau,
-                                collect_steps_per_episode=collect_steps_per_episode, target_model_update=target_model_update,
-                                n_step_update=n_step_update, batch_size=batch_size, memory_length=memory_length, progressbar=False)
+        model = TrainDDQN(episodes, warmup_episodes, lr, gamma, min_epsilon, decay_episodes, target_update_tau=target_update_tau,
+                          collect_steps_per_episode=collect_steps_per_episode, target_model_update=target_model_update,
+                          n_step_update=n_step_update, batch_size=batch_size, memory_length=memory_length, progressbar=False)
 
         model.compile_model(X_train, y_train, p, conv_layers, dense_layers, dropout_layers)
         model.train(X_val, y_val, "Gmean")
 
         # Predictions of model for `X_test`
-        best_network = model.load_model(fp=model.model_dir)
+        best_network = model.load_model(fp=model.model_path)
         y_pred = network_predictions(best_network, X_test)
         dqn_stats = classification_metrics(y_test, y_pred)
 

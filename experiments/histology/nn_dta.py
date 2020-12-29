@@ -28,8 +28,7 @@ df = df[df.Gender == "1"]
 print(f"Restenosis:\n{df.restenos.value_counts().to_string()}")
 
 y = relabel_by_column(y, df["restenos"], default=-1)
-# y = np.array([1, 1, 1, 1, 1, 0, 0, 0, 0, 0])
-# y = np.concatenate([y, y, y])
+# y = np.random.choice(2, size=30).astype(np.int32)  # Mock data for testing
 # X = np.concatenate([X, X, X])
 _X_train, _X_test, _y_train, _y_test = train_test_split(X, y, test_size=0.2, random_state=42)  # Ensure same train/test split every time
 
@@ -59,8 +58,12 @@ for _ in tqdm(range(10)):
     # New train-test split
     X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(_X_train, _y_train, _X_test, _y_test, min_class, maj_class,
                                                                         val_frac=0.2, print_stats=False)
-    model = Sequential([Input(shape=X_train.shape[1:]),
-                        Conv2D(32, kernel_size=(5, 5), activation="relu"),
+
+    X_train = X_train.reshape(X_train.shape + (1,))
+    X_test = X_test.reshape(X_test.shape + (1,))
+    X_val = X_val.reshape(X_val.shape + (1,))
+
+    model = Sequential([Conv2D(32, kernel_size=(5, 5), activation="relu"),
                         MaxPooling2D(pool_size=(2, 2)),
                         Conv2D(32, kernel_size=(5, 5), activation="relu"),
                         MaxPooling2D(pool_size=(2, 2)),
