@@ -1,14 +1,16 @@
 # imbDRLAppendix
 
-The appendix for the paper on _Imbalanced Classification with Deep Reinforcement Learning_:[imbDRL](https://github.com/Denbergvanthijs/imbDRL).
+The appendix for the paper on _Imbalanced Classification with Deep Reinforcement Learning_: [imbDRL](https://github.com/Denbergvanthijs/imbDRL).
 
 ## Requirements
 
-* [Python >= 3.7](https://www.python.org/downloads/)
+* [Python 3.7+](https://www.python.org/)
 * `pip install -r requirements.txt`
-* For the creditcard-fraud dataset:
-  * The files `./data/credit0.csv` and `./data/credit1.csv`.
-  * These files can be generated with the function `imbDRL.utils.split_csv` using the file `creditcard.csv` downloaded from [Kaggle](https://www.kaggle.com/mlg-ulb/creditcardfraud).
+* Logs are by default saved in `./logs/`
+* Trained models are by default saved in `./models/`
+* Optional: `./data/` folder located at the root of this repository.
+  * This folder must contain ```creditcard.csv``` downloaded from [Kaggle](https://www.kaggle.com/mlg-ulb/creditcardfraud) if you would like to use the [Credit Card Fraud](https://www.kaggle.com/mlg-ulb/creditcardfraud) dataset.
+  * Note: `creditcard.csv` needs to be split in a seperate train and test file. Please use the function `imbDRL.utils.split_csv`
 
 ## Running the experiments
 
