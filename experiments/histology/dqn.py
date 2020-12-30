@@ -36,7 +36,7 @@ gamma = 0.1  # Discount factor
 min_epsilon = 0.01  # Minimal and final chance of choosing random action
 decay_episodes = 10_000  # Number of episodes to decay from 1.0 to `min_epsilon`
 
-imb_rate = 0.0813  # Imbalance rate
+imb_rate = 0.0761  # Imbalance rate
 min_class = [1]  # Labels of the minority classes
 maj_class = [0]  # Labels of the majority classes
 
