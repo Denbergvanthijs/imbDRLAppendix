@@ -25,7 +25,7 @@ print(f"{df_icu.subject_id.nunique():_} patients on ICU; {df_icu.hadm_id.nunique
 df_icu = df_icu.loc[(df_icu.los >= 0.21) & (df_icu.los <= 41.67)]
 print(f"{df_icu.subject_id.nunique():_} patients on ICU for 5 to 1_000 hours; {df_icu.hadm_id.nunique():_} total ICU admissions;")
 
-df_total = df_patients.merge(df_icu, on=['subject_id'], how="inner")
+df_total = df_patients.merge(df_icu, on=["subject_id"], how="inner")
 print(f"{df_total.subject_id.nunique():_} patients; {df_total.hadm_id.nunique():_} total ICU admissions;")
 
 df_total.to_csv("./data/aki_1.csv", index=False)

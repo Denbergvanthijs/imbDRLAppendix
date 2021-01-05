@@ -23,7 +23,7 @@ df_total = df_total.loc[~(df_total["itemid"].isin(resp) & ((df_total["valuenum"]
 print(f"{df_total.itemid.value_counts().loc[resp].sum():_} valid respiratory measurements;")
 
 print(f"{df_total.itemid.value_counts().loc[temp].sum():_} temperature measurements;")
-df_total['valuenum'] = df_total.apply(lambda x: (x.valuenum - 32) / 1.8 if x.itemid == 223761 else x.valuenum, axis=1)  # F to C
+df_total["valuenum"] = df_total.apply(lambda x: (x.valuenum - 32) / 1.8 if x.itemid == 223761 else x.valuenum, axis=1)  # F to C
 df_total = df_total.loc[~(df_total["itemid"].isin(temp) & ((df_total["valuenum"] < 10) | (df_total["valuenum"] > 50)))]
 print(f"{df_total.itemid.value_counts().loc[temp].sum():_} valid temperature measurements;")
 
