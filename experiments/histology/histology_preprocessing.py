@@ -25,6 +25,7 @@ def fp_to_resized_image(filepath: str):
     image = tf.image.rgb_to_grayscale(image)
     image = tf.squeeze(image)  # Reduce last dimension
     image = tf.where(alpha, image, 0)  # If translucent, set pixel-value to 0
+    image = tf.reshape(image, image.shape + [1, ])
     return image, filename
 
 
@@ -103,9 +104,8 @@ if __name__ == "__main__":
     print(X_data.dtype, y_data.dtype)
 
     df = read_dataframe(args.csvpath)
-    df = df[df.Hospital == "2"]
-    df = df[df.Gender == "1"]
-    df = df[df.dateok.dt.year >= 2010]
+    df = df[(df.Gender == "1") & (df.Hospital == "2")]
+    df = df[(df.restenos != -1) & (df.restenos != 2)]
     print(df.restenos.value_counts())
     # data_exploration(df)
     y_data_labeled = relabel_by_column(y_data, df["restenos"], default=-1)
