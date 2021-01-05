@@ -12,7 +12,7 @@ batch_size = 32
 collect_steps_per_episode = 2000
 collect_every = episodes // 100
 
-target_model_update = episodes // 30  # Period to overwrite the target Q-network with the default Q-network
+target_model_update = 800  # Period to overwrite the target Q-network with the default Q-network
 target_update_tau = 1  # Soften the target model update
 n_step_update = 4
 

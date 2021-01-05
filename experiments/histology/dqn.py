@@ -33,8 +33,8 @@ dense_layers = (256, )  # Dense layers
 dropout_layers = None  # Dropout layers
 
 lr = 0.00025  # Learning rate
-gamma = 0.1  # Discount factor
-min_epsilon = 0.01  # Minimal and final chance of choosing random action
+gamma = 0.0  # Discount factor
+min_epsilon = 0.5  # Minimal and final chance of choosing random action
 decay_episodes = 10_000  # Number of episodes to decay from 1.0 to `min_epsilon`
 
 imb_rate = 0.0761  # Imbalance rate
