@@ -2,6 +2,7 @@ import argparse
 
 import numpy as np
 from imbDRL.metrics import classification_metrics
+from imbDRL.utils import imbalance_ratio
 from sklearn.dummy import DummyClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
@@ -13,17 +14,17 @@ parser.add_argument("csvpath", metavar="Path", type=str, nargs="?", default="./d
 args = parser.parse_args()
 
 df = read_dataframe(args.csvpath)
-df = df[df.Gender == "1"]
-# df = df[df.Hospital == "2"]
-# df = df[df.dateok.dt.year >= 2010]
-df = df[df.restenos != -1]
-df = df[df.restenos != 2]
-print(df["restenos"].value_counts())
+df = df[(df.Gender == "1") & (df.Hospital == "2")]
+df = df[(df.restenos != -1) & (df.restenos != 2)]
 y = df["restenos"].to_numpy()
-df.drop(columns="restenos", inplace=True)
+print(f"Imbalance ratio: {imbalance_ratio(y):.4f}\nRestenos:\n{df['restenos'].value_counts().to_string()}\n")
+
+df.drop(columns=["restenos", "Gender", "Hospital"], inplace=True)
 df["month"] = df["dateok"].dt.month
 df["dateok"] = df["dateok"].dt.year
-print(df.head())
+df = df.reset_index(drop=True)  # Drop study number
+print(f"{df.sample(3)}\n")
+
 X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=0.2, random_state=42)  # Ensure same train/test split every time
 
 

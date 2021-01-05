@@ -5,7 +5,7 @@ import numpy as np
 from imbDRL.data import get_train_test_val
 from imbDRL.metrics import classification_metrics
 from sklearn.model_selection import train_test_split
-from tensorflow.keras import Input, Sequential
+from tensorflow.keras import Sequential, backend
 from tensorflow.keras.layers import (Conv2D, Dense, Dropout, Flatten,
                                      MaxPooling2D)
 from tensorflow.keras.metrics import Precision, Recall
@@ -20,18 +20,16 @@ parser.add_argument("imagepath", metavar="Path", type=str, nargs="?", default=".
 parser.add_argument("csvpath", metavar="Path", type=str, nargs="?", default="./data/AE_20201412.csv", help="The path to the csv-file.")
 args = parser.parse_args()
 
-X, y = generate_dataset(args.imagepath)
+X, y = generate_dataset(args.imagepath)  # X are the images, y are the study numbers
 df = read_dataframe(args.csvpath)
-df = df[df.Gender == "1"]
-# df = df[df.Hospital == "2"]
-# df = df[df.dateok.dt.year >= 2010]
+df = df[(df.Gender == "1") & (df.Hospital == "2")]
+df = df[(df.restenos != -1) & (df.restenos != 2)]
 print(f"Restenosis:\n{df.restenos.value_counts().to_string()}")
 
-y = relabel_by_column(y, df["restenos"], default=-1)
+y = relabel_by_column(y, df["restenos"], default=-1)  # Convert study numbers to restenos labels
 # y = np.random.choice(2, size=30).astype(np.int32)  # Mock data for testing
 # X = np.concatenate([X, X, X])
 _X_train, _X_test, _y_train, _y_test = train_test_split(X, y, test_size=0.2, random_state=42)  # Ensure same train/test split every time
-
 
 min_class = [1]  # Labels of the minority classes
 maj_class = [0]  # Labels of the majority classes
@@ -58,11 +56,7 @@ for _ in tqdm(range(10)):
     # New train-test split
     X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(_X_train, _y_train, _X_test, _y_test, min_class, maj_class,
                                                                         val_frac=0.2, print_stats=False)
-
-    X_train = X_train.reshape(X_train.shape + (1,))
-    X_test = X_test.reshape(X_test.shape + (1,))
-    X_val = X_val.reshape(X_val.shape + (1,))
-
+    backend.clear_session()
     model = Sequential([Conv2D(32, kernel_size=(5, 5), activation="relu"),
                         MaxPooling2D(pool_size=(2, 2)),
                         Conv2D(32, kernel_size=(5, 5), activation="relu"),
