@@ -44,10 +44,10 @@ fp_dta = "./results/histology/dta.csv"
 fieldnames = ("Gmean", "F1", "Precision", "Recall", "TP", "TN", "FP", "FN")
 
 # Create empty files
-with open(fp_NN, "w", newline='') as f:
+with open(fp_NN, "w", newline="") as f:
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
-with open(fp_dta, "w", newline='') as f:
+with open(fp_dta, "w", newline="") as f:
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
 
@@ -74,7 +74,7 @@ for _ in tqdm(range(10)):
     NN_stats = classification_metrics(y_test, np.around(y_pred_test).astype(int))
 
     # Write current NN run to `fp_NN`
-    with open(fp_NN, 'a', newline='') as f:
+    with open(fp_NN, "a", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writerow(NN_stats)
 
@@ -85,6 +85,6 @@ for _ in tqdm(range(10)):
     dta_stats = classification_metrics(y_test, (y_pred_test >= thresholds[np.argmax(f1scores)]).astype(int))
 
     # Write current DTA run to `fp_dta`
-    with open(fp_dta, 'a', newline='') as f:
+    with open(fp_dta, "a", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writerow(dta_stats)
