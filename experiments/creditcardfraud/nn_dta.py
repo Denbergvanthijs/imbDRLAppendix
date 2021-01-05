@@ -1,7 +1,7 @@
 import csv
 
 import numpy as np
-from imbDRL.data import get_train_test_val, load_creditcard
+from imbDRL.data import get_train_test_val, load_csv
 from imbDRL.metrics import classification_metrics
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense, Dropout

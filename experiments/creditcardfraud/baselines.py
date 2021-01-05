@@ -5,6 +5,7 @@ from sklearn.dummy import DummyClassifier
 
 _, _, X_test, y_test = load_csv("./data/credit0.csv", "./data/credit1.csv", "Class", ["Time"], normalization=True)
 
+
 def uniform_baseline(X, y):
     uniform_clf = DummyClassifier(strategy="uniform")
     uniform_clf.fit(X, y)
