@@ -11,6 +11,7 @@ from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import plot_model
+from tensorflow.python.keras.layers.core import Dropout
 from tqdm import tqdm
 
 from histology_preprocessing import (generate_dataset, read_dataframe,
@@ -31,7 +32,7 @@ df["dateok"] = df["dateok"].dt.year
 print(f"Restenosis:\n{df.restenos.value_counts().to_string()}")
 
 X_structured = list(relabel_by_column(y_img, df[col], default=-1)
-                    for col in ["restenos", "Age", "arteryop", "dateok", "month"])  # Keep same order as X_img and y_label
+                    for col in ["restenos", "Age", "arteryop"])  # Keep same order as X_img and y_label
 X_structured = np.column_stack(X_structured)  # In the same order as X_img
 
 mask = np.isin(X_structured[:, 0], (0, 1))  # Only keep rows with valid label
@@ -50,11 +51,14 @@ model1_out = MaxPooling2D(pool_size=(2, 2))(model1_out)
 model1_out = Conv2D(32, kernel_size=(5, 5), activation="relu")(model1_out)
 model1_out = MaxPooling2D(pool_size=(2, 2))(model1_out)
 model1_out = Flatten()(model1_out)
+model1_out = Dropout(0.5)(model1_out)
 model1_out = Dense(256, activation="relu")(model1_out)
 
-model2_in = Input(shape=(4,))
+model2_in = Input(shape=(2,))
 model2_out = Dense(40, activation="relu")(model2_in)
+model2_out = Dropout(0.2)(model2_out)
 model2_out = Dense(40, activation="relu")(model2_out)
+model2_out = Dropout(0.2)(model2_out)
 
 outputs = Concatenate()([model1_out, model2_out])
 outputs = Dense(1, activation="sigmoid")(outputs)
@@ -73,7 +77,7 @@ with open(fp_dta, "w", newline="") as f:
     writer.writeheader()
 
 # Run the model ten times
-for _ in tqdm(range(1)):
+for _ in tqdm(range(10)):
     # New train-test split
     X_train, X_val, y_train, y_val = train_test_split(_X_train, _y_train, test_size=0.2)  # 64/20/16 split
 
@@ -87,10 +91,10 @@ for _ in tqdm(range(1)):
     model.compile(optimizer=Adam(0.00025), loss="binary_crossentropy", metrics=metrics)
 
     validation_data = ([X_val, X_val_struct], y_val)
-    model.fit([X_train, X_train_struct], y_train, epochs=3, batch_size=32, validation_data=validation_data, verbose=0)
+    model.fit([X_train, X_train_struct], y_train, epochs=30, batch_size=32, validation_data=validation_data, verbose=0)
 
-    y_pred_val = model.predict([X_val, X_val_struct])
-    y_pred_test = model.predict([X_test, X_test_struct])
+    y_pred_val = model([X_val, X_val_struct], training=False).numpy()  # Faster than .predict() for small batches
+    y_pred_test = model([X_test, X_test_struct], training=False).numpy()
     NN_stats = classification_metrics(y_test, np.around(y_pred_test).astype(int))
 
     # Write current NN run to `fp_NN`
@@ -109,4 +113,4 @@ for _ in tqdm(range(1)):
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writerow(dta_stats)
 
-plot_model(model, to_file="demo.png", show_shapes=True)
+plot_model(model, to_file="dual_model.png", show_shapes=True)
