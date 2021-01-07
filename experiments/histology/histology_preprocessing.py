@@ -57,7 +57,7 @@ def read_dataframe(filepath: str):
 def relabel_by_column(y_data: np.ndarray, column: pd.Series, default: int = -1):
     """
     Relabels `y_data` array by looking for corresponding value in `column` Series.
-    If value at y_data is not available in `column`, a default value will be chosen.
+    If value at `y_data` is not available in `column`, a default value will be chosen.
     Values in `y_data` must correspond to index of `column`.
     """
     d = column.to_dict()
