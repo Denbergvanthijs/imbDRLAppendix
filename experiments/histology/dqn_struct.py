@@ -50,11 +50,11 @@ df["month"] = df["dateok"].dt.month
 df["dateok"] = df["dateok"].dt.year
 df = df.reset_index(drop=True)  # Drop study number
 df = df.astype("int32")
-# df = (df - df.min()) / (df.max() - df.min())  # Normalization
+df = (df - df.min()) / (df.max() - df.min())  # Normalization
 # print(f"{df.sample(3)}\n")
 
 # Ensure same train/test split every time
-_X_train, _X_test, _y_train, _y_test = train_test_split(df[["Age", "arteryop", "dateok"]].to_numpy(), y, test_size=0.2, random_state=42)
+_X_train, _X_test, _y_train, _y_test = train_test_split(df[["Age", "arteryop"]].to_numpy(), y, test_size=0.2, random_state=42)
 fp_dqn = "./results/histology/dqn_struct.csv"
 fieldnames = ("Gmean", "F1", "Precision", "Recall", "TP", "TN", "FP", "FN")
 

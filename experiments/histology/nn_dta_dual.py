@@ -29,10 +29,12 @@ df = df[(df.Gender == "1") & (df.Hospital == "2")]
 df = df[(df.restenos != -1) & (df.restenos != 2)]
 df["month"] = df["dateok"].dt.month
 df["dateok"] = df["dateok"].dt.year
+df = df.astype("int32")
+df = (df - df.min()) / (df.max() - df.min())  # Normalization
 print(f"Restenosis:\n{df.restenos.value_counts().to_string()}")
 
 X_structured = list(relabel_by_column(y_img, df[col], default=-1)
-                    for col in ["restenos", "Age", "arteryop", "dateok"])  # Keep same order as X_img and y_label
+                    for col in ["restenos", "Age", "arteryop"])  # Keep same order as X_img and y_label
 X_structured = np.column_stack(X_structured)  # In the same order as X_img
 
 mask = np.isin(X_structured[:, 0], (0, 1))  # Only keep rows with valid label
@@ -54,7 +56,7 @@ model1_out = Flatten()(model1_out)
 model1_out = Dropout(0.5)(model1_out)
 model1_out = Dense(256, activation="relu")(model1_out)
 
-model2_in = Input(shape=(3,))
+model2_in = Input(shape=(2,))
 model2_out = Dense(40, activation="relu")(model2_in)
 model2_out = Dropout(0.2)(model2_out)
 model2_out = Dense(40, activation="relu")(model2_out)
