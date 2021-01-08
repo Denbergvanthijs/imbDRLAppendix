@@ -36,7 +36,7 @@ df = df.astype("int32")
 # print(f"{df.sample(3)}\n")
 
 # Ensure same train/test split every time
-_X_train, X_test, _y_train, y_test = train_test_split(df[["Age", "arteryop"]].to_numpy(), y, test_size=0.2, random_state=42)
+_X_train, X_test, _y_train, y_test = train_test_split(df[["Age", "arteryop", "dateok"]].to_numpy(), y, test_size=0.2, random_state=42)
 
 thresholds = np.arange(0.0, 1, 0.01)
 fp_NN = "./results/histology/nn_struct.csv"
@@ -57,7 +57,7 @@ for _ in tqdm(range(10)):
     X_train, X_val, y_train, y_val = train_test_split(_X_train, _y_train, test_size=0.2)  # 64/20/16 split
 
     backend.clear_session()
-    model = Sequential([Input(shape=(2,)),
+    model = Sequential([Input(shape=(3,)),
                         Dense(40, activation="relu"),
                         Dropout(0.2),
                         Dense(40, activation="relu"),
