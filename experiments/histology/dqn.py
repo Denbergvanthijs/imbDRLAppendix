@@ -29,7 +29,7 @@ n_step_update = 4
 
 conv_layers = ((32, (5, 5), 2), (32, (5, 5), 2), )  # Convolutional layers
 dense_layers = (256, )  # Dense layers
-dropout_layers = (0.5, )  # Dropout layers
+dropout_layers = None  # Dropout layers
 
 learning_rate = 0.00025  # Learning rate
 gamma = 0.0  # Discount factor

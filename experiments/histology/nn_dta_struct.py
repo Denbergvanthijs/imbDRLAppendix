@@ -59,9 +59,9 @@ for _ in tqdm(range(10)):
     backend.clear_session()
     model = Sequential([Input(shape=(2,)),
                         Dense(40, activation="relu"),
-                        Dropout(0.2),
+                        # Dropout(0.2),
                         Dense(40, activation="relu"),
-                        Dropout(0.2),
+                        # Dropout(0.2),
                         Dense(1, activation="sigmoid")])
     model.compile(optimizer=Adam(0.00025), loss="binary_crossentropy", metrics=metrics)
     model.fit(X_train, y_train, epochs=30, batch_size=32, validation_data=(X_val, y_val), verbose=0)
