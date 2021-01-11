@@ -33,7 +33,7 @@ dropout_layers = None  # Dropout layers
 
 learning_rate = 0.00025  # Learning rate
 gamma = 0.0  # Discount factor
-min_epsilon = 0.5  # Minimal and final chance of choosing random action
+min_epsilon = 0.01  # Minimal and final chance of choosing random action
 decay_episodes = 10_000  # Number of episodes to decay from 1.0 to `min_epsilon`
 
 min_class = [1]  # Labels of the minority classes
