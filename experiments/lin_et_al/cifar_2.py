@@ -3,7 +3,17 @@ import csv
 from imbDRL.agents.ddqn import TrainDDQN
 from imbDRL.data import get_train_test_val, load_image
 from imbDRL.metrics import classification_metrics, network_predictions
+from tensorflow import keras
+from tensorflow.keras.layers import Conv2D, Dense, Flatten, MaxPooling2D
 from tqdm import tqdm
+
+layers = [Conv2D(32, (5, 5), padding="Same", activation="relu"),
+          MaxPooling2D(pool_size=(2, 2)),
+          Conv2D(32, (5, 5), padding="Same", activation="relu"),
+          MaxPooling2D(pool_size=(2, 2)),
+          Flatten(),
+          Dense(256, activation="relu"),
+          Dense(2, activation=None)]
 
 episodes = 120_000  # Total episodes
 warmup_steps = 50_000  # Amount of warmup steps to collect data with random policy
@@ -13,10 +23,6 @@ target_update_period = 10_000
 target_update_tau = 1
 batch_size = 32
 n_step_update = 4
-
-conv_layers = ((32, (5, 5), 2), (32, (5, 5), 2), )  # Convolutional layers
-dense_layers = (256, )  # Dense layers
-dropout_layers = None  # Dropout layers
 
 learning_rate = 0.00025  # Learning rate
 gamma = 0.1  # Discount factor
@@ -41,12 +47,12 @@ for p in (0.04, 0.02, 0.01, 0.005):
         # New train-test split
         X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(_X_train, _y_train, _X_test, _y_test, min_class, maj_class,
                                                                             imb_rate=p, imb_test=False, val_frac=0.1, print_stats=False)
-
+        keras.backend.clear_session()
         model = TrainDDQN(episodes, warmup_steps, learning_rate, gamma, min_epsilon, decay_episodes, target_update_tau=target_update_tau,
                           collect_steps_per_episode=collect_steps_per_episode, target_update_period=target_update_period,
                           n_step_update=n_step_update, batch_size=batch_size, memory_length=memory_length, progressbar=False)
 
-        model.compile_model(X_train, y_train, conv_layers, dense_layers, dropout_layers, imb_rate=p)
+        model.compile_model(X_train, y_train, layers, imb_rate=p)
         model.train(X_val, y_val, "Gmean")
 
         # Predictions of model for `X_test`
