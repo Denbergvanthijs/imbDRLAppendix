@@ -5,13 +5,12 @@ import numpy as np
 from imbDRL.metrics import classification_metrics
 from sklearn.model_selection import train_test_split
 from tensorflow.keras import backend
-from tensorflow.keras.layers import (Concatenate, Conv2D, Dense, Flatten,
-                                     Input, MaxPooling2D)
+from tensorflow.keras.layers import (Concatenate, Conv2D, Dense, Dropout,
+                                     Flatten, Input, MaxPooling2D)
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import plot_model
-from tensorflow.python.keras.layers.core import Dropout
 from tqdm import tqdm
 
 from histology_preprocessing import (generate_dataset, read_dataframe,

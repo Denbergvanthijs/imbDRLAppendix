@@ -15,6 +15,6 @@ for experiment in experiments:
         # Welch’s t-test
 
         if (1 - p) > alpha:
-            print(f"{col:>12} p: {1-p:.6f}; Accept H0; Same performance;")
+            print(f"{col:>12} p: {1-p:.3f}; Accept H0; Same performance;")
         else:
-            print(f"{col:>12} p: {1-p:.6f}; Reject H0; Better performance;")
+            print(f"{col:>12} p: {1-p:.3f}; Reject H0; Better performance;")

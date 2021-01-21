@@ -23,9 +23,12 @@ df.drop(columns=["restenos", "Gender", "Hospital"], inplace=True)
 df["month"] = df["dateok"].dt.month
 df["dateok"] = df["dateok"].dt.year
 df = df.reset_index(drop=True)  # Drop study number
+df = df.astype("int32")
+df = (df - df.min()) / (df.max() - df.min())  # Normalization
 print(f"{df.sample(3)}\n")
 
-X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=0.2, random_state=42)  # Ensure same train/test split every time
+X_train, X_test, y_train, y_test = train_test_split(df[["Age", "arteryop"]].to_numpy(), y, test_size=0.2, random_state=42,
+                                                    stratify=y)  # Ensure same train/test split every time
 
 
 def uniform_baseline(X, y):

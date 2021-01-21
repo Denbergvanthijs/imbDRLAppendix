@@ -7,6 +7,7 @@ from imbDRL.metrics import classification_metrics, network_predictions
 from imbDRL.utils import imbalance_ratio
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
+from tensorflow.keras.layers import Dense
 from tqdm import tqdm
 
 from histology_preprocessing import read_dataframe
@@ -27,9 +28,9 @@ target_update_period = 400  # Period to overwrite the target Q-network with the 
 target_update_tau = 1  # Soften the target model update
 n_step_update = 4
 
-conv_layers = None  # Convolutional layers
-dense_layers = (40, 40)  # Dense layers
-dropout_layers = None  # Dropout layers
+layers = [Dense(40, activation="relu", input_shape=(None, 2, )),
+          Dense(40, activation="relu"),
+          Dense(2, activation=None)]
 
 learning_rate = 0.00025  # Learning rate
 gamma = 0.0  # Discount factor
@@ -54,7 +55,7 @@ df = (df - df.min()) / (df.max() - df.min())  # Normalization
 # print(f"{df.sample(3)}\n")
 
 # Ensure same train/test split every time
-_X_train, _X_test, _y_train, _y_test = train_test_split(df[["Age", "arteryop"]].to_numpy(), y, test_size=0.2, random_state=42)
+_X_train, _X_test, _y_train, _y_test = train_test_split(df[["Age", "arteryop"]].to_numpy(), y, test_size=0.2, random_state=42, stratify=y)
 fp_dqn = "./results/histology/dqn_struct.csv"
 fieldnames = ("Gmean", "F1", "Precision", "Recall", "TP", "TN", "FP", "FN")
 
@@ -73,7 +74,7 @@ for _ in tqdm(range(10)):
                       target_update_tau=target_update_tau, batch_size=batch_size, collect_steps_per_episode=collect_steps_per_episode,
                       memory_length=memory_length, collect_every=collect_every, n_step_update=n_step_update, progressbar=False)
 
-    model.compile_model(X_train, y_train, conv_layers, dense_layers, dropout_layers)
+    model.compile_model(X_train, y_train, layers)
     model.train(X_val, y_val, "F1")
 
     # Predictions of model for `X_test`

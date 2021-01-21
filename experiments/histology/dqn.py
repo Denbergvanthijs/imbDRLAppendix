@@ -5,8 +5,8 @@ from imbDRL.agents.ddqn import TrainDDQN
 from imbDRL.data import get_train_test_val
 from imbDRL.metrics import classification_metrics, network_predictions
 from sklearn.model_selection import train_test_split
-from tqdm import tqdm
 from tensorflow import keras
+from tqdm import tqdm
 
 from histology_preprocessing import (generate_dataset, read_dataframe,
                                      relabel_by_column)
@@ -47,7 +47,8 @@ print(f"Restenosis:\n{df.restenos.value_counts().to_string()}")
 
 y = relabel_by_column(y, df["restenos"], default=-1)  # Convert study numbers to restenos labels
 # y = np.array([1, 1, 1, 1, 1, 0, 0, 0, 0, 0])
-_X_train, _X_test, _y_train, _y_test = train_test_split(X, y, test_size=0.2, random_state=42)  # Ensure same train/test split every time
+_X_train, _X_test, _y_train, _y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y)  # Ensure same train/test split every time
 fp_dqn = "./results/histology/dqn.csv"
 fieldnames = ("Gmean", "F1", "Precision", "Recall", "TP", "TN", "FP", "FN")
 

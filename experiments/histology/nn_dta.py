@@ -29,7 +29,8 @@ print(f"Restenosis:\n{df.restenos.value_counts().to_string()}")
 y = relabel_by_column(y, df["restenos"], default=-1)  # Convert study numbers to restenos labels
 # y = np.random.choice(2, size=30).astype(np.int32)  # Mock data for testing
 # X = np.concatenate([X, X, X])
-_X_train, _X_test, _y_train, _y_test = train_test_split(X, y, test_size=0.2, random_state=42)  # Ensure same train/test split every time
+_X_train, _X_test, _y_train, _y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y)  # Ensure same train/test split every time
 
 min_class = [1]  # Labels of the minority classes
 maj_class = [0]  # Labels of the majority classes

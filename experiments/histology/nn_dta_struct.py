@@ -6,11 +6,10 @@ from imbDRL.metrics import classification_metrics
 from imbDRL.utils import imbalance_ratio
 from sklearn.model_selection import train_test_split
 from tensorflow.keras import backend
-from tensorflow.keras.layers import Dense, Input
+from tensorflow.keras.layers import Dense, Dropout, Input
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
-from tensorflow.python.keras.layers.core import Dropout
 from tqdm import tqdm
 
 from histology_preprocessing import read_dataframe
@@ -36,7 +35,7 @@ df = (df - df.min()) / (df.max() - df.min())  # Normalization
 # print(f"{df.sample(3)}\n")
 
 # Ensure same train/test split every time
-_X_train, X_test, _y_train, y_test = train_test_split(df[["Age", "arteryop"]].to_numpy(), y, test_size=0.2, random_state=42)
+_X_train, X_test, _y_train, y_test = train_test_split(df[["Age", "arteryop"]].to_numpy(), y, test_size=0.2, random_state=42, stratify=y)
 
 thresholds = np.arange(0.0, 1, 0.01)
 fp_NN = "./results/histology/nn_struct.csv"
@@ -54,7 +53,7 @@ with open(fp_dta, "w", newline="") as f:
 # Run the model ten times
 for _ in tqdm(range(10)):
     # New train-test split
-    X_train, X_val, y_train, y_val = train_test_split(_X_train, _y_train, test_size=0.2)  # 64/20/16 split
+    X_train, X_val, y_train, y_val = train_test_split(_X_train, _y_train, test_size=0.2, stratify=_y_train)  # 64/20/16 split
 
     backend.clear_session()
     model = Sequential([Input(shape=(2,)),
