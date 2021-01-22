@@ -1,4 +1,5 @@
 import csv
+import os
 
 import numpy as np
 from imbDRL.data import get_train_test_val, load_csv
@@ -8,6 +9,8 @@ from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.optimizers import Adam
 from tqdm import tqdm
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # CPU is faster than GPU on structured data
 
 min_class = [1]  # Labels of the minority classes
 maj_class = [0]  # Labels of the majority classes

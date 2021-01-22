@@ -6,6 +6,8 @@ from imbDRL.data import get_train_test_val
 from imbDRL.metrics import classification_metrics, network_predictions
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
+from tensorflow.keras.layers import (Conv2D, Dense, Dropout, Flatten,
+                                     MaxPooling2D)
 from tqdm import tqdm
 
 from histology_preprocessing import (generate_dataset, read_dataframe,
@@ -27,9 +29,14 @@ target_update_period = 400  # Period to overwrite the target Q-network with the 
 target_update_tau = 1  # Soften the target model update
 n_step_update = 4
 
-conv_layers = ((32, (5, 5), 2), (32, (5, 5), 2), )  # Convolutional layers
-dense_layers = (256, )  # Dense layers
-dropout_layers = None  # Dropout layers
+layers = [Conv2D(32, kernel_size=(5, 5), activation="relu"),
+          MaxPooling2D(pool_size=(2, 2)),
+          Conv2D(32, kernel_size=(5, 5), activation="relu"),
+          MaxPooling2D(pool_size=(2, 2)),
+          Flatten(),
+          # Dropout(0.5),
+          Dense(256, activation="relu"),
+          Dense(1, activation="sigmoid")]
 
 learning_rate = 0.00025  # Learning rate
 gamma = 0.0  # Discount factor
@@ -67,7 +74,7 @@ for _ in tqdm(range(10)):
                       target_update_tau=target_update_tau, batch_size=batch_size, collect_steps_per_episode=collect_steps_per_episode,
                       memory_length=memory_length, collect_every=collect_every, n_step_update=n_step_update, progressbar=True)
 
-    model.compile_model(X_train, y_train, conv_layers, dense_layers, dropout_layers)
+    model.compile_model(X_train, y_train, layers)
     model.train(X_val, y_val, "F1")
 
     # Predictions of model for `X_test`

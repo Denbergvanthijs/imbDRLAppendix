@@ -3,6 +3,7 @@ import csv
 from imbDRL.agents.ddqn import TrainDDQN
 from imbDRL.data import get_train_test_val, load_csv
 from imbDRL.metrics import classification_metrics, network_predictions
+from tensorflow.keras.layers import Dense, Dropout
 from tqdm import tqdm
 
 episodes = 25_000  # Total number of episodes
@@ -16,9 +17,11 @@ target_update_period = 800  # Period to overwrite the target Q-network with the 
 target_update_tau = 1  # Soften the target model update
 n_step_update = 4
 
-conv_layers = None  # Convolutional layers
-dense_layers = (256, 256, )  # Dense layers
-dropout_layers = (0.2, 0.2, )  # Dropout layers
+layers = [Dense(256, activation="relu", input_shape=(None, 2, )),
+          Dropout(0.2),
+          Dense(256, activation="relu"),
+          Dropout(0.2),
+          Dense(2, activation=None)]
 
 learning_rate = 0.001  # Learning rate
 gamma = 0.0  # Discount factor
@@ -47,7 +50,7 @@ for _ in tqdm(range(10)):
                       target_update_tau=target_update_tau, batch_size=batch_size, collect_steps_per_episode=collect_steps_per_episode,
                       memory_length=memory_length, collect_every=collect_every, n_step_update=n_step_update, progressbar=False)
 
-    model.compile_model(X_train, y_train, conv_layers, dense_layers, dropout_layers)
+    model.compile_model(X_train, y_train, layers)
     model.train(X_val, y_val, "F1")
 
     # Predictions of model for `X_test`
