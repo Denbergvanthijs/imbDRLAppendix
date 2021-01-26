@@ -46,18 +46,18 @@ for p in (0.01, 0.002, 0.001, 0.0005):
     for _ in tqdm(range(10), desc=f"Running model for imbalance ratio:{p}"):
         # New train-test split
         X_train, y_train, X_test, y_test, X_val, y_val = get_train_test_val(_X_train, _y_train, _X_test, _y_test, min_class, maj_class,
-                                                                            imb_rate=p, imb_test=False, val_frac=0.1, print_stats=False)
+                                                                            imb_ratio=p, imb_test=False, val_frac=0.1, print_stats=False)
 
         keras.backend.clear_session()
         model = TrainDDQN(episodes, warmup_steps, learning_rate, gamma, min_epsilon, decay_episodes, target_update_tau=target_update_tau,
                           collect_steps_per_episode=collect_steps_per_episode, target_update_period=target_update_period,
                           n_step_update=n_step_update, batch_size=batch_size, memory_length=memory_length, progressbar=False)
 
-        model.compile_model(X_train, y_train, layers, imb_rate=p)
+        model.compile_model(X_train, y_train, layers, imb_ratio=p)
         model.train(X_val, y_val, "Gmean")
 
         # Predictions of model for `X_test`
-        best_network = model.load_model(fp=model.model_path)
+        best_network = model.load_network(fp=model.model_path)
         y_pred = network_predictions(best_network, X_test)
         dqn_stats = classification_metrics(y_test, y_pred)
 

@@ -78,7 +78,7 @@ for _ in tqdm(range(10)):
     model.train(X_val, y_val, "F1")
 
     # Predictions of model for `X_test`
-    best_network = model.load_model(fp=model.model_path)
+    best_network = model.load_network(fp=model.model_path)
     y_pred = network_predictions(best_network, X_test)
     dqn_stats = classification_metrics(y_test, y_pred)
 
